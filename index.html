@@ -1,0 +1,152 @@
+</body><!DOCTYPE html>
+<html>
+<head>
+<title>Help Aditi get a Boyfriend!</title>
+<style>
+    body {
+        margin: 0;
+        background-color: #ffd6e0; /* soft pink */
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    h1 {
+        color: #ff4d94;
+        margin-top: 20px;
+    }
+    canvas {
+        background-color: #ffe6f0;
+        display: block;
+        margin: 20px auto;
+        border: 3px solid #ff99c8;
+    }
+    /* Retro buttons */
+    .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+    .row {
+        display: flex;
+    }
+    button {
+        background-color: #ff99c8;
+        border: 3px solid #ff4d94;
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+        font-family: monospace;
+        box-shadow: 2px 2px #ff4d94;
+        user-select: none;
+    }
+    button:active {
+        transform: translateY(2px);
+        box-shadow: none;
+    }
+</style>
+</head>
+<body>
+
+<h1>💘 Help Aditi get a Boyfriend! 💘</h1>
+<canvas id="maze" width="600" height="600"></canvas>
+
+<!-- On-screen retro controls -->
+<div class="controls">
+    <div class="row">
+        <button onclick="movePlayer(0,-1)">▲</button>
+    </div>
+    <div class="row">
+        <button onclick="movePlayer(-1,0)">◄</button>
+        <button onclick="movePlayer(0,1)">▼</button>
+        <button onclick="movePlayer(1,0)">►</button>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById("maze");
+const ctx = canvas.getContext("2d");
+
+// Maze grid
+const maze = [
+    [1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,"S",0,0,1,0,0,0,0,1,0,1],
+    [1,1,1,0,1,0,1,1,0,1,0,1],
+    [1,0,0,0,0,0,1,0,0,0,0,1],
+    [1,0,1,1,1,0,1,0,1,1,0,1],
+    [1,0,1,0,0,0,0,0,0,1,0,1],
+    [1,0,1,0,1,1,1,1,0,1,0,1],
+    [1,0,0,0,1,0,0,1,0,0,0,1],
+    [1,1,1,0,1,0,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,1,"P",1],
+    [1,1,1,1,1,1,1,1,1,1,1,1]
+];
+
+const cellSize = 50;
+let player = { x: 1, y: 1 };
+
+// Find Pookieprie's position
+let prize = { x: 0, y: 0 };
+maze.forEach((row, y) => {
+    row.forEach((cell, x) => {
+        if (cell === "P") prize = { x, y };
+    });
+});
+
+// Draw maze
+function drawMaze() {
+    for (let y = 0; y < maze.length; y++) {
+        for (let x = 0; x < maze[y].length; x++) {
+            if (maze[y][x] === 1) {
+                ctx.fillStyle = "#ff99c8"; // wall color
+                ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            } else if (maze[y][x] === "P") {
+                ctx.fillStyle = "#ff4d94"; // pookieprie
+                ctx.beginPath();
+                ctx.arc(x * cellSize + cellSize / 2, y * cellSize + cellSize / 2, 15, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
+}
+
+// Draw player (Sarthak)
+function drawPlayer() {
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(player.x * cellSize + cellSize / 2, player.y * cellSize + cellSize / 2, 15, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawMaze();
+    drawPlayer();
+}
+
+function movePlayer(dx, dy) {
+    let newX = player.x + dx;
+    let newY = player.y + dy;
+    if (maze[newY][newX] !== 1) {
+        player.x = newX;
+        player.y = newY;
+    }
+    if (player.x === prize.x && player.y === prize.y) {
+        setTimeout(() => alert("💖 Aditi finally got a Boyfriend (in her dreams ofc) hahaha! 💖"), 100);
+    }
+    gameLoop();
+}
+
+// Keyboard controls
+document.addEventListener("keydown", (e) => {
+    if (e.key === "w") movePlayer(0,-1);
+    if (e.key === "s") movePlayer(0,1);
+    if (e.key === "a") movePlayer(-1,0);
+    if (e.key === "d") movePlayer(1,0);
+});
+
+gameLoop();
+</script>
+</html>
